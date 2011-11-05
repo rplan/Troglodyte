@@ -1,0 +1,14 @@
+/*
+ * a multiline comment
+*/
+.test {
+    font-size: 13pt;
+    background-image: url(day.jpg);
+    color: #fff;
+}
+
+a 
+{
+   /* background-image: url('a/day.jpg'); */
+   background-image: url('a/1/day.jpg'); 
+}
