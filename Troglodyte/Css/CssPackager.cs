@@ -14,13 +14,15 @@ namespace Troglodyte.Css
         private CssImageEmbed _imageEmbedder;
         public PackagerResults Package(Package package, CssPackagerOptions options)
         {
-            _imageEmbedder = new CssImageEmbed(new CssImageEmbedOptions{ SiteRoot = package.SiteRoot});
+            _imageEmbedder = new CssImageEmbed(new CssImageEmbedOptions{ SiteRoot = options.SiteRoot});
             var packagerResult = new PackagerResults();
 
             // concatenate files
             var sb = new StringBuilder();
             foreach (var file in package.ComponentFiles)
             {
+                if (String.IsNullOrWhiteSpace(file))
+                    continue;
                 if (!File.Exists(file))
                     throw new ArgumentException("File '" + file + "' doesn't exist! (in package " + package.Name + ")");
                 // data uris
@@ -37,12 +39,30 @@ namespace Troglodyte.Css
 
             // YUI compressor
             string output;
-            if (options.IsCompressCss)
+            if (options.CompressOutput)
                 output = Yahoo.Yui.Compressor.CssCompressor.Compress(sb.ToString());
             else
                 output = sb.ToString();
 
-            File.WriteAllText(package.OutputFile, output);
+            var outputNamingParameters = new OutputNamingParameters
+            {
+                Package = package,
+                PackagedOutput = output,
+                PackagerOptions = options,
+                OutputFilenameSuffix = "css"
+            };
+
+            var outputFilename = options.OutputNaming(outputNamingParameters);
+            var outputPath = Path.Combine(options.OutputFolder, outputFilename);
+            File.WriteAllText(outputPath, output);
+
+            packagerResult.CompiledPackage = new PackagedCss(package, options)
+            {
+                OutputFile = outputPath,
+                SiteRoot = options.SiteRoot
+            };
+
+
             return packagerResult;
         }
     }

@@ -13,30 +13,36 @@ It's particularities are:
 
 ## Usage
 
+Packages are defined in Javascript, in the following format:
+
+            [
+                {
+                    "Name": "MyCssPackage"
+                    "ComponentFiles": [
+                        "/path/to/first/file.css",
+                        "/path/to/another/file.css"
+                    ]
+                }
+            ]
+
 For run-time packaging - in global.asax.cs:
 
-            var serverRoot = base.Context.Server.MapPath("/");
-            var myCssPackage = new Package
-            {
-                Name = "MyCss",
-                OutputFile =  serverRoot + "\\dynamic\\output.css",
-                SiteRoot = serverRoot,
-                ComponentFiles = new [] { serverRoot + "\\styles\\first.css", serverRoot + "\\styles\\second.css" }
-            };
-            var cssPackager = new CssPackager();
-            cssPackager.Package(homePageCss, new CssPackagerOptions
-                {
-                    IsCompressCss = true,
-                    CompressionOptions = new CssCompressionOptions { UseDataUris = true }
-                });
+            var packageManager = new PackageManager(HttpContext.Current.Server.MapPath("/"));
+            packageManager.InitialiseCssPackages("c:\\path\\to\\css-package-definition.js");
+            packageManager.InitialiseJsPackages("c:\\path\\to\\js-package-definition.js");
+            packageManager.PackageAll(
+                CssPackagerOptions.Default("c:\\path\\to\\output-folder"),
+                JsPackagerOptions.Default("c:\\path\\to\\output-folder"));
+            // the packaged file is now available at c:\\path\\to\\output-folder\\MyCssPackage.css
 
-            // the packaged file is available at /dynamic/output.css
+The &lt;script&gt; tag can then be generated as such:
 
+            var package = packageManager.GetJsPackage("MyCssPackage");
+            var htmlScriptTag = package.GetOutputHtmlString();
 
-The same code can be used for compile-time or deploy-time packaging.
-
+Compile-time packaging is not currently supported, though it should be fairly straightforward to add.
 
 ## Thanks
 
-[IKVM.Net](http://www.ikvm.net), for allowing Java code to run in the CLR
+[IKVM.Net](http://www.ikvm.net), for allowing Java code to run in the CLR  
 [YUI Compressor.Net](http://yuicompressor.codeplex.com), for converting the YUI Compressor to .Net

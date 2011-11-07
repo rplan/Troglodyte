@@ -19,7 +19,7 @@ namespace Troglodyte.Tests
         }
 
         [Test]
-        public void Package_Should_compress_output_file()
+        public void Package_should_compress_output_file()
         {
             var inputFile = Path.Combine(_currentFolder, "TestAssets\\jquery-1.6.1.js");
             var outputFile = Path.Combine(_currentFolder, "output.js");
@@ -29,10 +29,15 @@ namespace Troglodyte.Tests
                               {
                                   Name = "Test",
                                   ComponentFiles = new[] { inputFile },
-                                  OutputFile = outputFile,
-                                  SiteRoot = _currentFolder
                               };
-            var result = _packager.Package(package, new JsPackagerOptions { JsCompressionOptions = new ClosureCompilerJsCompressionOptions { CompressionLevel = ClosureCompressionLevel.SimpleOptimizations, CompressJs = true } });
+            var packagerOptions = new JsPackagerOptions { 
+                OutputFolder = Path.Combine(_currentFolder, "TestAssets"),
+                SiteRoot = _currentFolder,
+                CompressOutput = true, 
+                CompressionOptions = new ClosureCompilerJsCompressionOptions { CompressionLevel = ClosureCompressionLevel.SimpleOptimizations},
+                OutputNaming = OutputNamings.CustomPath(outputFile)
+            };
+            var result = _packager.Package(package, packagerOptions);
             Assert.IsTrue(result.IsSuccess);
             Assert.IsTrue(File.Exists(outputFile));
             Assert.IsTrue(File.ReadAllBytes(outputFile).Length < File.ReadAllBytes(inputFile).Length, "The output file is not smaller than the input file - did compression occur?");

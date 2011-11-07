@@ -7,7 +7,7 @@ namespace Troglodyte.Js
 {
     public class JsPackager
     {
-        public PackagerResults Package(Package package, JsPackagerOptions packagerOptions)
+        public PackagerResults Package(Package package, JsPackagerOptions options)
         {
             var packagerResult = new PackagerResults();
             // concatenate files
@@ -23,11 +23,11 @@ namespace Troglodyte.Js
 
             // closure compressor
             string output;
-            if (packagerOptions.JsCompressionOptions != null 
-                && packagerOptions.JsCompressionOptions.CompressJs
-                && packagerOptions.JsCompressionOptions is ClosureCompilerJsCompressionOptions)
+            if (options.CompressionOptions != null 
+                && options.CompressOutput
+                && options.CompressionOptions is ClosureCompilerJsCompressionOptions)
             {
-                var result = new ClosureCompilerJsCompressor().Compress(sb.ToString(), "compressed.js", (ClosureCompilerJsCompressionOptions)packagerOptions.JsCompressionOptions);
+                var result = new ClosureCompilerJsCompressor().Compress(sb.ToString(), "compressed.js", (ClosureCompilerJsCompressionOptions)options.CompressionOptions);
                 packagerResult.Errors = result.Errors;
                 packagerResult.Warnings = result.Warnings;
                 if (result.IsSuccess)
@@ -44,7 +44,26 @@ namespace Troglodyte.Js
                 output = sb.ToString();
             }
 
-            File.WriteAllText(package.OutputFile, output);
+            var outputNamingParameters = new OutputNamingParameters
+            {
+                Package = package,
+                PackagedOutput = output,
+                PackagerOptions = options,
+                OutputFilenameSuffix = "js"
+            };
+
+            var outputFilename = options.OutputNaming(outputNamingParameters);
+            var outputPath = Path.Combine(options.OutputFolder, outputFilename);
+            File.WriteAllText(outputPath, output);
+
+            packagerResult.CompiledPackage = new PackagedJs(package, options)
+            {
+                OutputFile = outputPath,
+                SiteRoot = options.SiteRoot
+            };
+
+
+            //File.WriteAllText(package.OutputFile, output);
             return packagerResult;
         }
     }
