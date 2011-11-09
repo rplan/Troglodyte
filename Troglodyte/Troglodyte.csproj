@@ -79,6 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\FileMatchers.cs" />
     <Compile Include="Common\IPackageDefinitionParser.cs" />
     <Compile Include="Common\JsonPackageDefinitionParser.cs" />
     <Compile Include="Common\OutputNamingParameters.cs" />

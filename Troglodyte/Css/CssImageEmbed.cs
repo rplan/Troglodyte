@@ -7,6 +7,7 @@ using Troglodyte.Js;
 
 namespace Troglodyte.Css
 {
+    // based on the code in Jammit http://documentcloud.github.com/jammit/
     public class CssImageEmbed
     {
         private readonly CssImageEmbedOptions _options;
@@ -58,7 +59,7 @@ namespace Troglodyte.Css
                         Description = fullPath + " doesn't exist! (resolved from " + path.Value + " in " + cssPath + ")"
                     });
                 }
-                else
+                else if (_options.UseDataUrisFor(fullPath))
                 {
                     var replacementString = GetEncodedAssetUrl(fullPath, path.Value);
                     modifiedCss += css.Substring(lastMatch, match.Index - lastMatch - 1) + replacementString;

@@ -1,7 +1,9 @@
-﻿namespace Troglodyte.Css
+﻿using System;
+
+namespace Troglodyte.Css
 {
     public class CssCompressionOptions
     {
-        public bool UseDataUris { get; set; }
+        public Func<string, bool> UseDataUrisFor { get; set; }
     }
 }

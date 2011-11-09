@@ -34,7 +34,7 @@ namespace Troglodyte.Tests
                 OutputFolder = Path.Combine(_currentFolder, "TestAssets"),
                 SiteRoot = _currentFolder,
                 CompressOutput = true, 
-                CompressionOptions = new CssCompressionOptions { UseDataUris = true },
+                CompressionOptions = new CssCompressionOptions { UseDataUrisFor = FileMatchers.All },
                 OutputNaming = OutputNamings.CustomPath(outputFile)
             };
             var result = _packager.Package(package, packagerOptions);
@@ -59,7 +59,7 @@ namespace Troglodyte.Tests
                 OutputFolder = Path.Combine(_currentFolder, "TestAssets"),
                 SiteRoot = _currentFolder,
                 CompressOutput = true, 
-                CompressionOptions = new CssCompressionOptions { UseDataUris = false },
+                CompressionOptions = new CssCompressionOptions { UseDataUrisFor = FileMatchers.None },
                 OutputNaming = OutputNamings.CustomPath(outputFile)
             };
             var result = _packager.Package(package, packagerOptions);

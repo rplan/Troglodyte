@@ -8,7 +8,7 @@ namespace Troglodyte.Css
         /// The default JS Packager options:
         /// <ul>
         /// <li>IsCompressCss = true</li>
-        /// <li>CompressionOptions.UseDataUris = true</li>
+        /// <li>CompressionOptions.UseDataUrisFor = <see cref="FileMatchers.None" /></li>
         /// </ul>
         /// </summary>
         public static CssPackagerOptions Default(string outputFolder)
@@ -18,7 +18,7 @@ namespace Troglodyte.Css
                            OutputNaming = OutputNamings.PackageNamePrefixedMd5,
                            CompressionOptions = new CssCompressionOptions
                                                     {
-                                                        UseDataUris = true,
+                                                        UseDataUrisFor = FileMatchers.None,
                                                     },
                             OutputFolder = outputFolder
                        };

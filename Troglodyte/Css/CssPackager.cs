@@ -14,7 +14,7 @@ namespace Troglodyte.Css
         private CssImageEmbed _imageEmbedder;
         public PackagerResults Package(Package package, CssPackagerOptions options)
         {
-            _imageEmbedder = new CssImageEmbed(new CssImageEmbedOptions{ SiteRoot = options.SiteRoot});
+            _imageEmbedder = new CssImageEmbed(new CssImageEmbedOptions{ SiteRoot = options.SiteRoot, UseDataUrisFor = options != null && options.CompressionOptions != null ? options.CompressionOptions.UseDataUrisFor : null });
             var packagerResult = new PackagerResults();
 
             // concatenate files
@@ -27,7 +27,9 @@ namespace Troglodyte.Css
                     throw new ArgumentException("File '" + file + "' doesn't exist! (in package " + package.Name + ")");
                 // data uris
                 var css = File.ReadAllText(file);
-                if (options.CompressionOptions != null && options.CompressionOptions.UseDataUris)
+                if (options.CompressOutput 
+                    && options.CompressionOptions != null 
+                    && options.CompressionOptions.UseDataUrisFor != null)
                 {
                     var embedderResult = _imageEmbedder.Compress(css, file);
                     css = embedderResult.Output;
