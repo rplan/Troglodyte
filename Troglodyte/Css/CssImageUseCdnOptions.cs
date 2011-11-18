@@ -2,9 +2,8 @@
 
 namespace Troglodyte.Css
 {
-    public class CssCompressionOptions
+    public class CssImageUseCdnOptions
     {
-        public Func<string, bool> UseDataUrisFor { get; set; }
         public Func<string, string> GetCdnImagePath { get; set; }
     }
 }

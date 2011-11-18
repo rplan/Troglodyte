@@ -1,7 +1,8 @@
 /*
- * a multiline comment
+* a multiline comment
 */
-.test {
+.test 
+{
     font-size: 13pt;
     background-image: url(day.jpg);
     color: #fff;

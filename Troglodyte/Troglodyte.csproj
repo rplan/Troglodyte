@@ -86,6 +86,8 @@
     <Compile Include="Common\PackageDefinitionParsingException.cs" />
     <Compile Include="Common\PackagerResultDetail.cs" />
     <Compile Include="Common\PackagerResults.cs" />
+    <Compile Include="Css\CssImageUseCdnOptions.cs" />
+    <Compile Include="Css\CssImageUseCdn.cs" />
     <Compile Include="Css\CssImageEmbedOptions.cs" />
     <Compile Include="Css\CssCompressionOptions.cs" />
     <Compile Include="Css\CssPackager.cs" />

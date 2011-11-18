@@ -12,9 +12,11 @@ namespace Troglodyte.Css
     {
         // TODO: prefix CDN url to CSS images
         private CssImageEmbed _imageEmbedder;
+        private CssImageUseCdn _imageUseCdn;
         public PackagerResults Package(Package package, CssPackagerOptions options)
         {
             _imageEmbedder = new CssImageEmbed(new CssImageEmbedOptions{ SiteRoot = options.SiteRoot, UseDataUrisFor = options != null && options.CompressionOptions != null ? options.CompressionOptions.UseDataUrisFor : null });
+            _imageUseCdn = new CssImageUseCdn(new CssImageUseCdnOptions { GetCdnImagePath = options != null && options.CompressionOptions != null ? options.CompressionOptions.GetCdnImagePath : null });
             var packagerResult = new PackagerResults();
 
             // concatenate files
@@ -36,6 +38,16 @@ namespace Troglodyte.Css
                     packagerResult.Errors = embedderResult.Errors;
                     packagerResult.Warnings = embedderResult.Warnings;
                 }
+                if (options.CompressOutput
+                    && options.CompressionOptions != null
+                    && options.CompressionOptions.GetCdnImagePath != null)
+                {
+                    var embedderResult = _imageUseCdn.Compress(css, file);
+                    css = embedderResult.Output;
+                    packagerResult.Errors = embedderResult.Errors;
+                    packagerResult.Warnings = embedderResult.Warnings;
+                }
+
                 sb.AppendLine(css);
             }
 

@@ -16,6 +16,7 @@ namespace Troglodyte.Tests
         }
 
         [Test]
+        [Ignore]
         public void TestSuccessfulFile()
         {
             var json = @"[{Name: 'hello', ComponentFiles: ['c:\\test.js', '\\test2.js']}, { Name: 'package2', ComponentFiles: ['\\test3.js'] }]";

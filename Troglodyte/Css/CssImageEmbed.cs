@@ -66,7 +66,7 @@ namespace Troglodyte.Css
                     lastMatch = match.Index + match.Length;
                 }
             }
-            modifiedCss += css.Substring(lastMatch, css.Length - lastMatch - 1);
+            modifiedCss += css.Substring(lastMatch, css.Length - lastMatch);
             result.Output = modifiedCss;
             return result;
         }
