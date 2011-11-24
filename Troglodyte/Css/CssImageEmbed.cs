@@ -50,7 +50,7 @@ namespace Troglodyte.Css
             foreach (Match match in EMBED_DETECTOR.Matches(css))
             {
                 var path = match.Groups[1];
-                var fullPath = GetFileLocation(path.Value, cssPath);
+                var fullPath = Utils.GetPhysicalPathFromUrl(path.Value, cssPath, _options.SiteRoot);
                 if (!File.Exists(fullPath))
                 {
                     result.Warnings.Add(new PackagerResultDetail
@@ -84,20 +84,6 @@ namespace Troglodyte.Css
             }
             var base64 = Convert.ToBase64String(bytes);
             return string.Format("url(\"data:{0};charset=utf-8;base64,{1}\")", mimeType, base64);
-        }
-
-        internal string GetFileLocation(string pathInCss, string cssFilePath)
-        {
-            var fullPath = "";
-            if (pathInCss[0] == '/') // absolute path
-            {
-                fullPath = Path.Combine(_options.SiteRoot, pathInCss.Replace('/', '\\').Substring(1));
-            }
-            else
-            {
-                fullPath = Path.GetFullPath(Path.Combine(new FileInfo(cssFilePath).DirectoryName, pathInCss.Replace('/', '\\')));
-            }
-            return fullPath;
         }
     }
 }

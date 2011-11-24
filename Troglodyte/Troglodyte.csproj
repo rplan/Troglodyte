@@ -94,6 +94,7 @@
     <Compile Include="Css\CssImageEmbed.cs" />
     <Compile Include="Common\Package.cs" />
     <Compile Include="Css\CssPackagerOptions.cs" />
+    <Compile Include="Css\Utils.cs" />
     <Compile Include="Js\ClosureCompressionLevel.cs" />
     <Compile Include="Js\ClosureCompilerErrorsException.cs" />
     <Compile Include="Js\ClosureCompilerJsCompressionOptions.cs" />

@@ -16,7 +16,8 @@ namespace Troglodyte.Tests
         public void SetUp()
         {
             currentFolder = Path.GetDirectoryName(Assembly.GetAssembly(this.GetType()).Location);
-            _compressor = new CssImageUseCdn(new CssImageUseCdnOptions { GetCdnImagePath = (path) =>
+            _compressor = new CssImageUseCdn(new CssImageUseCdnOptions { SiteRoot = currentFolder, 
+                                                                         GetCdnImagePath = (path) =>
                                                                                                {
                                                                                                    if (path.StartsWith("//"))
                                                                                                        return null;
@@ -35,14 +36,14 @@ namespace Troglodyte.Tests
 .test 
 {
     font-size: 13pt;
-    background-image: url('//mycdn/day.jpg');
+    background-image: url('//mycdn/TestAssets/day.jpg');
     color: #fff;
 }
 
 a 
 {
-   /* background-image: url('//mycdn/a/day.jpg'); */
-   background-image: url('//mycdn/a/1/day.jpg'); 
+   /* background-image: url('//mycdn/TestAssets/a/day.jpg'); */
+   background-image: url('//mycdn/TestAssets/a/1/day.jpg'); 
 }";
             var cssFile = Path.Combine(currentFolder, "TestAssets\\test1.css");
             var output = _compressor.Compress(File.ReadAllText(cssFile), cssFile);

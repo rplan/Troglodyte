@@ -19,17 +19,6 @@ namespace Troglodyte.Tests
             _compressor = new CssImageEmbed(new CssImageEmbedOptions { SiteRoot = currentFolder, UseDataUrisFor = (s) => true});
         }
 
-        [TestCase("../a/day.jpg", "TestAssets\\stylesheets\\test.css", "TestAssets\\a\\day.jpg")]
-        [TestCase("../../a/day.jpg", "TestAssets\\stylesheets\\subfolder\\test.css", "TestAssets\\a\\day.jpg")]
-        [TestCase("../a/1/day.jpg", "TestAssets\\stylesheets\\test.css", "TestAssets\\a\\1\\day.jpg")]
-        [TestCase("/TestAssets/a/1/day.jpg", "test.css", "TestAssets\\a\\1\\day.jpg")]
-        public void GetFileLocation_Should_Return_Correct_Path(string css, string cssPath, string expectedPath)
-        {
-            cssPath = Path.Combine(currentFolder, cssPath);
-            expectedPath = Path.Combine(currentFolder, expectedPath);
-            Assert.AreEqual(expectedPath.ToLower(), _compressor.GetFileLocation(css, cssPath).ToLower());
-        }
-
         [Test]
         public void Compress_ShouldWorkAsExpected()
         {

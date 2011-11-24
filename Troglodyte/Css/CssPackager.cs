@@ -16,7 +16,7 @@ namespace Troglodyte.Css
         public PackagerResults Package(Package package, CssPackagerOptions options)
         {
             _imageEmbedder = new CssImageEmbed(new CssImageEmbedOptions{ SiteRoot = options.SiteRoot, UseDataUrisFor = options != null && options.CompressionOptions != null ? options.CompressionOptions.UseDataUrisFor : null });
-            _imageUseCdn = new CssImageUseCdn(new CssImageUseCdnOptions { GetCdnImagePath = options != null && options.CompressionOptions != null ? options.CompressionOptions.GetCdnImagePath : null });
+            _imageUseCdn = new CssImageUseCdn(new CssImageUseCdnOptions { SiteRoot = options.SiteRoot, GetCdnImagePath = options != null && options.CompressionOptions != null ? options.CompressionOptions.GetCdnImagePath : null });
             var packagerResult = new PackagerResults();
 
             // concatenate files

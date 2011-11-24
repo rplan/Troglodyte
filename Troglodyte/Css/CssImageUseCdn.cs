@@ -40,7 +40,7 @@ namespace Troglodyte.Css
             foreach (Match match in EMBED_DETECTOR.Matches(css))
             {
                 var path = match.Groups[1];
-                var replacementString = _options.GetCdnImagePath(path.Value);
+                var replacementString = _options.GetCdnImagePath(Utils.GetAbsoluteUrlFromPhysicalPath(Utils.GetPhysicalPathFromUrl(path.Value, cssPath, _options.SiteRoot), _options.SiteRoot));
                 if (!string.IsNullOrEmpty(replacementString))
                 {
                     replacementString = " url('" + replacementString + "')";
