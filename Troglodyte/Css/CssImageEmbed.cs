@@ -50,6 +50,8 @@ namespace Troglodyte.Css
             foreach (Match match in EMBED_DETECTOR.Matches(css))
             {
                 var path = match.Groups[1];
+                if (path.Value.StartsWith("http"))
+                    continue; //ignore any non-local images
                 var fullPath = Utils.GetPhysicalPathFromUrl(path.Value, cssPath, _options.SiteRoot);
                 if (!File.Exists(fullPath))
                 {

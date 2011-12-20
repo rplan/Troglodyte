@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Troglodyte.Css
 {
@@ -7,16 +8,23 @@ namespace Troglodyte.Css
 
         public static string GetPhysicalPathFromUrl(string url, string cssFilePath, string siteRootPath)
         {
-            var fullPath = "";
-            if (url[0] == '/') // absolute path
+            try
             {
-                fullPath = Path.Combine(siteRootPath, url.Replace('/', '\\').Substring(1));
-            }
-            else
+                var fullPath = "";
+                if (url[0] == '/') // absolute path
+                {
+                    fullPath = Path.Combine(siteRootPath, url.Replace('/', '\\').Substring(1));
+                }
+                else
+                {
+                    fullPath = Path.GetFullPath(Path.Combine(new FileInfo(cssFilePath).DirectoryName, url.Replace('/', '\\')));
+                }
+                return fullPath;
+            } 
+            catch (Exception e)
             {
-                fullPath = Path.GetFullPath(Path.Combine(new FileInfo(cssFilePath).DirectoryName, url.Replace('/', '\\')));
+                throw new Exception(string.Format("Couldn't retrieve the physical path for CSS url '{0}'", url), e);
             }
-            return fullPath;
         }
 
         public static string GetAbsoluteUrlFromPhysicalPath(string path, string siteRootPath)
