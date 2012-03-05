@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Troglodyte.Css;
 using Troglodyte.Js;
 
 namespace Troglodyte.Common
 {
+    [Serializable]
     public class Package
     {
         public string Name { get; set; }
         public IEnumerable<string> ComponentFiles { get; set; }
     }
 
+    [Serializable]
     public class CompiledPackage : Package
     {
         private string _outputHtmlString;
@@ -31,8 +35,8 @@ namespace Troglodyte.Common
             ComponentFiles = package.ComponentFiles;
         }
 
-        public string OutputFile { private get; set; }
-        public string SiteRoot { private get; set; }
+        public string OutputFile { protected get; set; }
+        public string SiteRoot { protected get; set; }
         public string Variant { get; set; }
 
         public string GetOutputUrl()
@@ -71,17 +75,40 @@ namespace Troglodyte.Common
             }
             return _componentHtmlString;
         }
+
+        public static T DeserializeFrom<T>(string pathSerialisedPackage)
+        {
+            using (var stream = new FileStream(pathSerialisedPackage, FileMode.Open))
+                //return (T) new DataContractSerializer(typeof (T)).ReadObject(stream);
+                return (T) new BinaryFormatter().Deserialize(stream);
+        }
     }
 
+    [Serializable]
     public class PackagedCss : CompiledPackage
     {
-        private const string _cssLink = "<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}/{1}\" />";
-        public PackagedCss(Package package, CssPackagerOptions options) : base(package, options, _cssLink) {}
+        private const string CssLink = "<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}/{1}\" />";
+        public PackagedCss(Package package, CssPackagerOptions options) : base(package, options, CssLink) {}
+        public void SerializeTo(string outputFolder)
+        {
+            using(var stream = new FileStream(Path.Combine(outputFolder, Name + (Variant == null ? "" : "_" + Variant) + ".css.bin"), FileMode.Create))
+                new BinaryFormatter().Serialize(stream, this);
+                //new DataContractSerializer(GetType(), new List<Type> { typeof(CssCompressionOptions), typeof(CssPackagerOptions)}).WriteObject(stream, this);
+        }
+
     }
 
+    [Serializable]
     public class PackagedJs : CompiledPackage
     {
-        private const string _jsLink = "<script type=\"text/javascript\" src=\"{0}/{1}\"></script>";
-        public PackagedJs(Package package, JsPackagerOptions options) : base(package, options, _jsLink) {}
+        private const string JsLink = "<script type=\"text/javascript\" src=\"{0}/{1}\"></script>";
+        public PackagedJs(Package package, JsPackagerOptions options) : base(package, options, JsLink) {}
+        public void SerializeTo(string outputFolder)
+        {
+            using(var stream = new FileStream(Path.Combine(outputFolder, Name + (Variant == null ? "" : "_" + Variant) + ".js.bin"), FileMode.Create))
+                new BinaryFormatter().Serialize(stream, this);
+                //new DataContractSerializer(GetType()).WriteObject(stream, this);
+        }
+
     }
 }

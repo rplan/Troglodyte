@@ -1,7 +1,9 @@
-﻿using Troglodyte.Common;
+﻿using System;
+using Troglodyte.Common;
 
 namespace Troglodyte.Css
 {
+    [Serializable]
     public class CssPackagerOptions : PackagerOptions
     {
         /// <summary>

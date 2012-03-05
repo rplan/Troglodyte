@@ -1,5 +1,8 @@
-﻿namespace Troglodyte.Js
+﻿using System;
+
+namespace Troglodyte.Js
 {
+    [Serializable]
     public enum ClosureCompressionLevel
     {
         WhitespaceOnly,

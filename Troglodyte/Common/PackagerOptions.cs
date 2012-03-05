@@ -2,6 +2,7 @@
 
 namespace Troglodyte.Common
 {
+    [Serializable]
     public abstract class PackagerOptions
     {
         public bool CompressOutput { get; set; }

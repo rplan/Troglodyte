@@ -11,8 +11,8 @@ namespace Troglodyte.PackageManager
     public class PackageManager
     {
         private readonly string _siteRoot;
-        private readonly List<Package> _cssPackages = new List<Package>();
-        private readonly List<Package> _jsPackages = new List<Package>();
+        internal readonly List<Package> _cssPackages = new List<Package>();
+        internal readonly List<Package> _jsPackages = new List<Package>();
         private readonly List<PackagedCss> _cssCompiledPackages = new List<PackagedCss>();
         private readonly List<PackagedJs> _jsCompiledPackages = new List<PackagedJs>();
         private readonly JsPackager _jsPackager = new JsPackager();
@@ -95,6 +95,30 @@ namespace Troglodyte.PackageManager
             return this;
         }
 
+        public PackageManager FromSerializedPackagedCss(string packagePath)
+        {
+            var p = CompiledPackage.DeserializeFrom<PackagedCss>(packagePath);
+            _cssPackages.Add(p); 
+            _cssCompiledPackages.Add(p);
+            return this;
+        }
+
+        public PackageManager FromSerializedPackagedJs(string packagePath)
+        {
+            var p = CompiledPackage.DeserializeFrom<PackagedJs>(packagePath);
+            _jsPackages.Add(p); 
+            _jsCompiledPackages.Add(p);
+            return this;
+        }
+
+        public PackageManager FromSerializedPackages(string packagePath)
+        {
+            foreach (var f in Directory.GetFiles(packagePath, "*.js.bin"))
+                FromSerializedPackagedJs(f);
+            foreach (var f in Directory.GetFiles(packagePath, "*.css.bin"))
+                FromSerializedPackagedJs(f);
+            return this;
+        }
         public PackagedJs GetJsPackage(string name, string variant = null)
         {
             return _jsCompiledPackages.FirstOrDefault(x => x.Name == name && x.Variant == variant);
@@ -111,7 +135,7 @@ namespace Troglodyte.PackageManager
                 throw new ArgumentException(packageFilename + "  doesn't exist!");
             var packages =_packageDefinitionParser.Parse(packageFilename);
             if (packages == null || !packages.Any())
-                throw new ArgumentException("Package file '" + packageFilename + "' doesn't contain any valid packages");
+                throw new ArgumentException("Package definition file '" + packageFilename + "' doesn't contain any valid packages");
             foreach (var package in packages)
             {
                 var newComponentFiles = new List<string>();

@@ -1,5 +1,8 @@
-﻿namespace Troglodyte.Js
+﻿using System;
+
+namespace Troglodyte.Js
 {
+    [Serializable]
     public class ClosureCompilerJsCompressionOptions : JsCompressionOptions
     {
         public ClosureCompilerJsCompressionOptions() : base()
