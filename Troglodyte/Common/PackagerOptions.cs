@@ -5,6 +5,11 @@ namespace Troglodyte.Common
     [Serializable]
     public abstract class PackagerOptions
     {
+        public PackagerOptions()
+        {
+            IsCreatePackage = true;
+        }
+
         public bool CompressOutput { get; set; }
 
         /// <summary>
@@ -28,5 +33,10 @@ namespace Troglodyte.Common
         /// The naming function is used to generate the name of the packaged output.
         /// </summary>
         public Func<OutputNamingParameters, string> OutputNaming { get; set; }
+
+        /// <summary>
+        /// Whether or not to perform any packaging operations. Defaults to true.
+        /// </summary>
+        public bool IsCreatePackage { get; set; }
     }
 }

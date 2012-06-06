@@ -4,3 +4,5 @@ _ReSharper.*
 *.suo
 **/bin
 **/obj
+
+*.dotCover

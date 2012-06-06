@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Troglodyte.Common;
-using Troglodyte.Js;
 
 namespace Troglodyte.Css
 {

@@ -22,14 +22,14 @@ namespace Troglodyte.Common
     {
         private string _outputHtmlString;
         private string _componentHtmlString;
-        private readonly PackagerOptions _options;
+        protected readonly PackagerOptions Options;
         private readonly string _htmlLink;
         private string _outputUrl;
         private IEnumerable<string> _componentUrls;
 
         public CompiledPackage(Package package, PackagerOptions options, string htmlLink)
         {
-            _options = options;
+            Options = options;
             _htmlLink = htmlLink;
             Name = package.Name;
             ComponentFiles = package.ComponentFiles;
@@ -38,11 +38,14 @@ namespace Troglodyte.Common
         public string OutputFile { protected get; set; }
         public string SiteRoot { protected get; set; }
         public string Variant { get; set; }
+        public bool IsPackaged { get; set; }
 
         public string GetOutputUrl()
         {
             if (_outputUrl == null)
                 _outputUrl = OutputFile.Substring(SiteRoot.Length).Replace('\\', '/');
+            if (_outputUrl.Length > 0 && _outputUrl[0] == '/')
+                _outputUrl = _outputUrl.Substring(1);
             return _outputUrl;
         }
 
@@ -50,7 +53,13 @@ namespace Troglodyte.Common
         {
             if (_componentUrls == null)
             {
-                _componentUrls = ComponentFiles.Select(f => (f[0] == '\\' ? Path.Combine(SiteRoot, f) : f).Substring(SiteRoot.Length).Replace('\\', '/'));
+                _componentUrls = ComponentFiles.Select(f =>
+                {
+                    var u = (f[0] == '\\' ? Path.Combine(SiteRoot, f) : f).Substring(SiteRoot.Length).Replace('\\', '/');
+                    if (u.Length > 0 && u[0] == '/')
+                        u = u.Substring(1);
+                    return u;
+                });
             }
             return _componentUrls;
         }
@@ -58,7 +67,10 @@ namespace Troglodyte.Common
         public string GetOutputHtmlString()
         {
             if (_outputHtmlString == null)
-                _outputHtmlString = string.Format(_htmlLink, _options.OutputCdn, GetOutputUrl());
+            {
+                var outputUrl = GetOutputUrl();
+                _outputHtmlString = string.Format(_htmlLink, Options.OutputCdn, outputUrl);
+            }
             return _outputHtmlString;
         }
 
@@ -69,7 +81,7 @@ namespace Troglodyte.Common
                 var sb = new StringBuilder();
                 foreach(var cu in GetComponentUrls())
                 {
-                    sb.AppendLine(string.Format(_htmlLink, _options.OutputCdn, cu));
+                    sb.AppendLine(string.Format(_htmlLink, Options.OutputCdn, cu));
                 }
                 _componentHtmlString = sb.ToString();
             }
@@ -96,6 +108,14 @@ namespace Troglodyte.Common
                 //new DataContractSerializer(GetType(), new List<Type> { typeof(CssCompressionOptions), typeof(CssPackagerOptions)}).WriteObject(stream, this);
         }
 
+        public void SetRuntimeOptions(CssPackagerOptions options)
+        {
+            if (options != null)
+            {
+                Options.OutputCdn = options.OutputCdn;
+            }
+        }
+
     }
 
     [Serializable]
@@ -108,6 +128,14 @@ namespace Troglodyte.Common
             using(var stream = new FileStream(Path.Combine(outputFolder, Name + (Variant == null ? "" : "_" + Variant) + ".js.bin"), FileMode.Create))
                 new BinaryFormatter().Serialize(stream, this);
                 //new DataContractSerializer(GetType()).WriteObject(stream, this);
+        }
+
+        public void SetRuntimeOptions(JsPackagerOptions options)
+        {
+            if (options != null)
+            {
+                Options.OutputCdn = options.OutputCdn;
+            }
         }
 
     }

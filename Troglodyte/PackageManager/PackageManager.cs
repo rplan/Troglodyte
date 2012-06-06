@@ -95,28 +95,30 @@ namespace Troglodyte.PackageManager
             return this;
         }
 
-        public PackageManager FromSerializedPackagedCss(string packagePath)
+        public PackageManager FromSerializedPackagedCss(string packagePath, CssPackagerOptions runtimePackagerOptions = null)
         {
             var p = CompiledPackage.DeserializeFrom<PackagedCss>(packagePath);
+            p.SetRuntimeOptions(runtimePackagerOptions);
             _cssPackages.Add(p); 
             _cssCompiledPackages.Add(p);
             return this;
         }
 
-        public PackageManager FromSerializedPackagedJs(string packagePath)
+        public PackageManager FromSerializedPackagedJs(string packagePath, JsPackagerOptions runtimePackagerOptions = null)
         {
             var p = CompiledPackage.DeserializeFrom<PackagedJs>(packagePath);
+            p.SetRuntimeOptions(runtimePackagerOptions);
             _jsPackages.Add(p); 
             _jsCompiledPackages.Add(p);
             return this;
         }
 
-        public PackageManager FromSerializedPackages(string packagePath)
+        public PackageManager FromSerializedPackages(string packagePath, JsPackagerOptions jsRuntimePackagerOptions = null, CssPackagerOptions cssRuntimePackagerOptions = null )
         {
             foreach (var f in Directory.GetFiles(packagePath, "*.js.bin"))
-                FromSerializedPackagedJs(f);
+                FromSerializedPackagedJs(f, jsRuntimePackagerOptions);
             foreach (var f in Directory.GetFiles(packagePath, "*.css.bin"))
-                FromSerializedPackagedJs(f);
+                FromSerializedPackagedCss(f, cssRuntimePackagerOptions);
             return this;
         }
         public PackagedJs GetJsPackage(string name, string variant = null)
